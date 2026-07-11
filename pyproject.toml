@@ -1,0 +1,9 @@
+[project]
+name = "sar"
+version = "0.1.0"
+description = "Playing with SAR"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "sarpy>=2.0.1",
+]
