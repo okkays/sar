@@ -9,3 +9,6 @@ dependencies = [
     "gpxpy>=1.6.2",
     "sarpy>=2.0.1",
 ]
+
+[tool.mypy]
+disable_error_code = ["import-not-found"]
