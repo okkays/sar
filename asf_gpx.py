@@ -32,6 +32,11 @@ def search_for(polygon, maxResults=1, **search_kwargs):
     log_count(f'There are a total of {count} products. Fetching at most 10.')
     return asf_search.geo_search(**params, maxResults=maxResults)
 
+def search_for_gpx(path_to_gpx, **search_kwargs):
+    bounds = gpx.get_bounds(path_to_gpx)
+    polygon = get_polygon(bounds)
+    return search_for(polygon, **search_kwargs)
+
 def make_session():
     try:
         with open('token.secret', 'r') as token_file:
@@ -43,11 +48,10 @@ def make_session():
     return session
 
 if __name__ == "__main__":
-    sample_bounds = gpx.get_sample_bounds()
-    sample_polygon = get_polygon(sample_bounds)
-    results = search_for(sample_polygon,
-                         processingLevel='METADATA_SLC',
-                         maxResults=2)
+    results = search_for_gpx(
+        'sample.gpx',
+        processingLevel='METADATA_SLC',
+        maxResults=2)
 
     logger.debug(results)
 
