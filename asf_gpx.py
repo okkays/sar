@@ -4,29 +4,13 @@ import os
 import shutil
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
-
 logger = logging.getLogger('asf_gpx')
-
-
-def get_polygon(bounds):
-  (min_lat, min_lon), (max_lat, max_lon) = bounds
-  corners = ((min_lon, min_lat),
-             (max_lon, min_lat),
-             (max_lon, max_lat),
-             (min_lon, max_lat),
-             (min_lon, min_lat))  # Repeat corner 1 to close the loop
-
-  formatted_corners = ','.join([' '.join([str(p) for p in c]) for c in corners])
-  return f'POLYGON(({formatted_corners}))'
 
 
 def search_for(polygon, maxResults=1, **search_kwargs):
   params = {
       'intersectsWith': polygon,
       'dataset': asf_search.DATASET.SENTINEL1,
-      'start': '2 months ago',
-      'end': 'now',
       **search_kwargs,
   }
   count = asf_search.search_count(**params)
@@ -37,7 +21,7 @@ def search_for(polygon, maxResults=1, **search_kwargs):
 
 def search_for_gpx(path_to_gpx, **search_kwargs):
   bounds = gpx.get_bounds(path_to_gpx)
-  polygon = get_polygon(bounds)
+  polygon = gpx.get_wkt_polygon(bounds)
   return search_for(polygon, **search_kwargs)
 
 
@@ -57,6 +41,8 @@ if __name__ == "__main__":
   results = search_for_gpx(
       'sample.gpx',
       processingLevel='METADATA_SLC',
+      start='2 months ago',
+      end='now',
       maxResults=2)
 
   logger.debug(results)
